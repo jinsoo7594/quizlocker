@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">quizlocker</string>
+
+    <!-- 환경설정 창 MultipleSelectList 에서 사용 할 문자열 배열(퀴즈 종류) -->
+    <string-array name="category">
+        <item>일반상식</item>
+        <item>역사</item>
+        <item>수도</item>
+    </string-array>
+
+</resources>
