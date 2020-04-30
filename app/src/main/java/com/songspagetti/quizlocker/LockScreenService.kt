@@ -43,30 +43,33 @@ class LockScreenService : Service() {
                 }
             }
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            //오레오 버전 이상부터 백그라운드 서비스가 계속 실행되지 않도록 제한을 하기 때문에 계속 실행되어야 하는 서비스는 포어그라운드 서비스를 사용해야 함.
-            // 포어그라운드 서비스는 반드시 '알림'을 사용자에게 띄워 어떤 앱이 백그라운드에서 계속 작업중인지 알 수 있고, 불필요하다 생각할 경우 서비스를 중지할 수 있도록 해야 함.
-            //상단 알림 채널 생성 (임의의 id, 알람이름, 중요도)
-            val chan = NotificationChannel(ANDROID_CHANNEL_ID, "MyService", NotificationManager.IMPORTANCE_NONE)
-            chan.lightColor = Color.BLUE
-            chan.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+                //오레오 버전 이상부터 백그라운드 서비스가 계속 실행되지 않도록 제한을 하기 때문에 계속 실행되어야 하는 서비스는 포어그라운드 서비스를 사용해야 함.
+                // 포어그라운드 서비스는 반드시 '알림'을 사용자에게 띄워 어떤 앱이 백그라운드에서 계속 작업중인지 알 수 있고, 불필요하다 생각할 경우 서비스를 중지할 수 있도록 해야 함.
+                //상단 알림 채널 생성 (임의의 id, 알람이름, 중요도)
+                val channel = NotificationChannel(ANDROID_CHANNEL_ID, "MyService", NotificationManager.IMPORTANCE_DEFAULT)
+                channel.lightColor = Color.BLUE
+                channel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
 
-            //Notification 서비스 객체를 가져옴
-            val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            manager.createNotificationChannel(chan)
+                //Notification 서비스 객체를 가져옴
+                //Android 8.0 이상에서 알림을 제공하려면 먼저 NotificationChannel 인스턴스를 createNotificationChannel()에 전달하여 앱의 알림 채널 을 시스템에 등록해야 합니다.
+                val manager : NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                // Register the channel with the system
+                manager.createNotificationChannel(channel)
 
-            //Notification 알림 객체 생성
-            val builder = Notification.Builder(this, ANDROID_CHANNEL_ID)
-                .setContentTitle(getString(R.string.app_name))
-                .setContentText("SmartTracker Running")
+                //Notification 알림 객체 생성
+                val builder = Notification.Builder(this, ANDROID_CHANNEL_ID)
+                    .setContentTitle(getString(R.string.app_name))
+                    .setContentText("SmartTracker Running")
 
-            val notification = builder.build()
-            // Notification  알림과 함께 포어그라운드 서비스 시작
-            startForeground(NOTIFICATION_ID, notification)
+                val notification = builder.build()
+                // Notification  알림과 함께 포어그라운드 서비스 시작
+                startForeground(NOTIFICATION_ID, notification)
 
-        }
+            }
+            // @@@ 오레오 미만 모델 대상 노티피케이션 추가하자! @@@
 
-        return Service.START_REDELIVER_INTENT
+            return Service.START_REDELIVER_INTENT
     }
 
     override fun onDestroy() {
