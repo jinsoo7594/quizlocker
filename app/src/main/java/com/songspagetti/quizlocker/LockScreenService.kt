@@ -28,7 +28,7 @@ class LockScreenService : Service() {
             registerReceiver(receiver, filter)
         }
     }
-    // 서비스를 호출하는 클라이언트가 startService() 함수를 호출할때마다 불리는 콜백함수
+    // 서비스를 호출하는 클라이언트가 startService() or foregroundService() 함수를 호출할때마다 불리는 콜백함수
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
             super.onStartCommand(intent, flags, startId)
             if(intent != null){
@@ -37,6 +37,7 @@ class LockScreenService : Service() {
                     // 이 경우 receiver 가 null 이면 새로 생성하고 등록한다.
                     if(receiver == null){
                         receiver = ScreenOffReceiver()
+                        // 암시적 인텐트 --> 해당 앱이 사전에 실행중이어야 함.(런타임에 등록)
                         val filter = IntentFilter(Intent.ACTION_SCREEN_OFF)
                         registerReceiver(receiver, filter)
                     }
